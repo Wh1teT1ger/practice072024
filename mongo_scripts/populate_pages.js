@@ -1589,4 +1589,4 @@ var data = [
     }
 ]
 
-db.pages.bulkWrite(data);
+db.pages.insertMany(data);
