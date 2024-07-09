@@ -27,7 +27,7 @@ class PageHandler(var whiteList: Set[String], var blackList: Set[String]) {
   private def findStopWords(content: String): List[String] = {
     var list: ListBuffer[String] = new ListBuffer[String]()
     for (stopWord <- blackList) {
-      if (content.contains(stopWord)) {
+      if (content.toLowerCase.contains(stopWord.toLowerCase)) {
         list.append(stopWord)
       }
     }
