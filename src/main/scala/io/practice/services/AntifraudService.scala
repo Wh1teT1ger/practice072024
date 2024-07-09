@@ -4,6 +4,7 @@ import akka.actor.Scheduler
 import io.practice
 import io.practice.data.Mongo
 import io.practice.executionContext
+import io.practice.handlers.PageHandler
 
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
@@ -16,6 +17,8 @@ object AntifraudService {
 
   private val whiteList = Set("notSoBad")
 
+  private val pageHandler = new PageHandler(whiteList, stopList)
+
   def start(): Unit = {
     scheduler.scheduleWithFixedDelay(pollInterval, pollInterval) { () =>
       scanPages()
@@ -24,7 +27,7 @@ object AntifraudService {
 
   private def scanPages(): Unit = {
     Mongo.getAllPages.map { pagesSeq =>
-      println("hello world")
+      pagesSeq.map(page => pageHandler.pageHandler(page))
     }
   }
 }

@@ -6,6 +6,7 @@ import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistr
 import org.bson.codecs.configuration.CodecRegistry
 import org.mongodb.scala.bson.codecs.Macros._
 import org.mongodb.scala._
+import org.mongodb.scala.model.Filters._
 
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.SeqHasAsJava
@@ -48,6 +49,13 @@ object Mongo {
 
   private val pagesCollection = db.getCollection[Page]("pages")
   private val reportsCollection = db.getCollection[Report]("reports")
+
+  def addReport(stopWords: List[String], projectId: String, pageId: String): Future[result.InsertOneResult] = {
+    var report: Report = Report(stopWords, projectId, pageId)
+    reportsCollection.insertOne(report).head()
+  }
+
+  def findReport(pageId: String): Future[Seq[Report]] = reportsCollection.find(equal("pageId", pageId)).toFuture()
 
   def getAllPages: Future[Seq[Page]] = pagesCollection.find().toFuture()
 }
