@@ -1,5 +1,6 @@
 package io.practice.data
 
+import com.typesafe.scalalogging.Logger
 import io.practice.models.{Page, Report}
 import io.practice.services.ConfigService
 import org.bson.codecs.configuration.CodecRegistries.{fromProviders, fromRegistries}
@@ -22,6 +23,8 @@ object Mongo {
     ),
     MongoClient.DEFAULT_CODEC_REGISTRY
   )
+
+  private val logger = Logger(getClass.getName)
 
   private val db: MongoDatabase = getDb
 
@@ -57,5 +60,8 @@ object Mongo {
     reportsCollection.updateOne(equal("pageId", pageId), combine(set("stopWords", stopWords), set("projectId", projectId),
       set("pageId", pageId), set("addedAt", System.currentTimeMillis())), UpdateOptions().upsert(true)).head()
 
-  def getAllPages: Future[Seq[Page]] = pagesCollection.find().toFuture()
+  def getAllPages(handler: Page => Unit, batchSize: Int = Int.MaxValue): Unit =
+    pagesCollection.find().batchSize(batchSize).subscribe((page: Page) => handler(page),
+      (e: Throwable) => logger.error(s"There was an error: $e"),
+      () => logger.debug("Completed"))
 }

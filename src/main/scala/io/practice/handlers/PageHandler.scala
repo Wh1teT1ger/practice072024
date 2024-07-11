@@ -13,6 +13,7 @@ class PageHandler(var whiteList: Set[String], var blackList: Set[String]) {
   private val logger = Logger(getClass.getName)
 
   def pageHandler(page: Page): Unit = {
+    logger.debug(s"Handling page ${page._id}")
     if (isInWhiteList(page.projectId)) {
       return
     }

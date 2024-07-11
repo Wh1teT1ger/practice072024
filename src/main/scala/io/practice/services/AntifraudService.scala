@@ -30,8 +30,6 @@ object AntifraudService {
   }
 
   private def scanPages(): Unit = {
-    Mongo.getAllPages.map { pagesSeq =>
-      pagesSeq.map(page => pageHandler.pageHandler(page))
-    }
+    Mongo.getAllPages(pageHandler.pageHandler, 20)
   }
 }
