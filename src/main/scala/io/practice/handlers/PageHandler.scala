@@ -18,13 +18,9 @@ class PageHandler(var whiteList: Set[String], var blackList: Set[String]) {
     }
     val stopWords: List[String] = findStopWords(page.content)
     if (stopWords.nonEmpty) {
-      Mongo.findReport(page._id.toString).map { seq =>
-        if (seq.toList.isEmpty) {
-          logger.info(s"Found new page ${page.projectId} with stop words: $stopWords")
-          Mongo.addReport(stopWords, page.projectId, page._id.toString)
-        }
+      Mongo.updateReport(stopWords, page.projectId, page._id.toString).map {updateResult =>
+        logger.debug(s"Update result: ${updateResult.toString}")
       }
-
     }
   }
 
