@@ -15,7 +15,7 @@ object AntifraudService {
   private val pollInterval = 5 seconds
   private val scheduler: Scheduler = practice.scheduler
 
-  private val stopList = Set("хакер", "взлом", "ddos", "доход", "PayPal", "фрибет")
+  private val stopList = Set("хакер", "взлом", "ddos", "доход", "paypal", "фрибет")
 
   private val whiteList = Set("notSoBad")
 
