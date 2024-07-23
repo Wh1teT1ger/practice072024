@@ -15,7 +15,7 @@ class PageHandler(var whiteList: Set[String], var blackList: Set[String]) {
   private val engToRuMap: Map[Char, List[Char]] = Map('3' -> List('е'), '@' -> List('а'), 'a' -> List('а'), 'b' -> List('в', 'б'),
     'c' -> List('с'), 'd' -> List('д'), 'e' -> List('е', 'э'), 'f' -> List('ф'), 'g' -> List(), 'i' -> List('и'),
     'j' -> List('и'), 'h' -> List('н', 'х'), 'k' -> List('к'), 'l' -> List('л'), 'm' -> List('м', 'т'),
-    'n' -> List('н', 'п', 'и'), 'o' -> List('о'), 'p' -> List('р', 'п'), 'r' -> List('r'), 's' -> List('с'),
+    'n' -> List('н', 'п', 'и'), 'o' -> List('о'), 'p' -> List('р', 'п'), 'r' -> List('р'), 's' -> List('с'),
     't' -> List('т'), 'u' -> List('u'), 'v' -> List('в'), 'x' -> List('х'), 'y' -> List('у'), 'z' -> List('з'))
 
   def pageHandler(page: Page): Unit = {
@@ -33,7 +33,7 @@ class PageHandler(var whiteList: Set[String], var blackList: Set[String]) {
 
   private def findStopWords(content: String): List[String] = {
     val list: ListBuffer[String] = new ListBuffer[String]()
-    val listContent = content.toLowerCase.split("[-–/&\\n.,()#|:;'\"_?!=<> ]")
+    val listContent = content.toLowerCase.split("[^a-zа-я0-9]")
     for (word <- listContent) {
       if (word.nonEmpty) {
         val fixedWords = fixWords(word)
@@ -76,7 +76,7 @@ class PageHandler(var whiteList: Set[String], var blackList: Set[String]) {
         listWord.append(string.toString())
       } else {
         val c: Char = word.charAt(lengthString)
-        if (!isCyrillic(c) || !engToRuMap.contains(c)) {
+        if (isCyrillic(c) || !engToRuMap.contains(c)) {
           string += c
           queue.enqueue(string)
         } else {
